@@ -110,7 +110,7 @@
             bottom: -200px;
             left: 50%;
             transform: translateX(-50%);
-            width: 120px;
+            width: 150px;
             animation: santaAnimation 2s ease-in-out forwards;
             z-index: 9999;
         }
@@ -203,6 +203,17 @@
 
         musicToggleButton.addEventListener('click', toggleMusic);
 
+        /*==================== TEXT-TO-SPEECH ====================*/
+        function playChristmasNarration() {
+            const text = "We wish you a Merry Christmas and a Happy New Year!";
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-GB';
+            utterance.rate = 0.9;
+            utterance.pitch = 1;
+            utterance.volume = 1;
+            speechSynthesis.speak(utterance);
+        }
+
         /*==================== SNOWFALL ====================*/
         function startSnowfall() {
             const canvas = document.getElementById('snowfall');
@@ -230,6 +241,7 @@
         }
 
         window.onload = () => {
+            playChristmasNarration();
             startSnowfall();
         };
 
