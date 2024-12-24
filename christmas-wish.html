@@ -258,9 +258,9 @@
             </div>
             <audio id="christmasSong" src="assets/music/christmas_song.mp3" preload="auto" autoplay loop></audio>
             <audio id="hoHoHoSound" src="assets/music/hohoho.mp3" preload="auto"></audio>
-            <button id="musicToggleButton" class="music-toggle-button">🎵</button>
+            
 
-            <button id="playNarrationButton" class="music-toggle-button">🗣️</button>
+            
 
         </div>
         <canvas id="snowfall"></canvas>
@@ -268,88 +268,204 @@
     </div>
 
     <script>
-        /*==================== MUSIC LOGIC ====================*/
-        const music = document.getElementById('christmasSong');
-        const hoHoHoSound = document.getElementById('hoHoHoSound');
-        const musicToggleButton = document.getElementById('musicToggleButton');
+    /*==================== MUSIC AND NARRATION LOGIC ====================*/
+    const music = document.getElementById('christmasSong');
+    const hoHoHoSound = document.getElementById('hoHoHoSound');
 
-        function toggleMusic() {
-            if (music.paused) {
-                music.play();
-                musicToggleButton.innerText = 'Stop Music 🎵';
-            } else {
-                music.pause();
-                musicToggleButton.innerText = 'Play Music 🎵';
-            }
+    // Function to play Christmas Music
+    function playChristmasMusic() {
+        if (music) {
+            music.play().then(() => {
+                console.log('🎵 Christmas music is playing automatically!');
+            }).catch((error) => {
+                console.warn('🚫 Autoplay prevented. Waiting for user interaction.', error);
+            });
         }
+    }
 
-        musicToggleButton.addEventListener('click', toggleMusic);
+    // Function to Play Narration
+    function playChristmasNarration() {
+        const text = "Wishing you a Merry Christmas and a Happy New Year!";
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-GB';
+        utterance.rate = 0.9;
+        utterance.pitch = 1;
+        utterance.volume = 1;
 
-        /*==================== VOICE TRANSCRIPTION ====================*/
-        function playChristmasNarration() {
-            const text = "Wishing you a Merry Christmas and a Happy New Year!";
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'en-GB';
-            utterance.rate = 0.8;
-            utterance.pitch = 1;
-            utterance.volume = 1;
-
-            // Ensure speech starts only after a user interaction
-            if ('speechSynthesis' in window) {
-                speechSynthesis.cancel(); // Clear any queued speeches
-                speechSynthesis.speak(utterance);
-            } else {
-                console.warn("🚫 Speech Synthesis API not supported on this browser.");
-            }
+        if ('speechSynthesis' in window) {
+            speechSynthesis.cancel(); // Clear any queued speeches
+            speechSynthesis.speak(utterance);
+        } else {
+            console.warn("🚫 Speech Synthesis API not supported on this browser.");
         }
+    }
 
-        // Add event listener for mobile compatibility
-        document.addEventListener('click', () => {
-            if (!speechSynthesis.speaking) {
-                playChristmasNarration();
-            }
+    // Function to Start Both Music and Narration
+    function startChristmasExperience() {
+        playChristmasMusic();
+        playChristmasNarration();
+    }
+
+    // Ensures autoplay restrictions are handled
+    document.addEventListener('DOMContentLoaded', () => {
+        startChristmasExperience();
+
+        // Add user interaction fallback for mobile autoplay restrictions
+        document.body.addEventListener('click', () => {
+            startChristmasExperience();
         }, { once: true });
+    });
 
+    /*==================== SNOWFALL EFFECT ====================*/
+    function startSnowfall() {
+        const canvas = document.getElementById('snowfall');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
 
-        /*==================== SNOWFALL ====================*/
-        function startSnowfall() {
-            const canvas = document.getElementById('snowfall');
-            const ctx = canvas.getContext('2d');
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            let flakes = Array(100).fill().map(() => ({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                r: Math.random() * 4 + 1
-            }));
-            function draw() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.fillStyle = 'white';
-                flakes.forEach(f => {
-                    ctx.beginPath();
-                    ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
-                    ctx.fill();
-                    f.y += 1;
-                    if (f.y > canvas.height) f.y = 0;
-                });
-                requestAnimationFrame(draw);
-            }
-            draw();
+        const flakes = Array(100).fill().map(() => ({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            r: Math.random() * 4 + 1,
+            d: Math.random() + 1,
+        }));
+
+        function drawFlakes() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'white';
+            ctx.beginPath();
+            flakes.forEach(f => {
+                ctx.moveTo(f.x, f.y);
+                ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2, true);
+            });
+            ctx.fill();
+            moveFlakes();
         }
 
-        window.onload = () => {
-            playChristmasNarration();
-            startSnowfall();
-        };
+        function moveFlakes() {
+            flakes.forEach(f => {
+                f.y += Math.pow(f.d, 2);
+                if (f.y > canvas.height) {
+                    f.y = 0;
+                    f.x = Math.random() * canvas.width;
+                }
+            });
+        }
 
-        window.onclick = () => {
-            document.getElementById('santa').style.display = 'block';
-            hoHoHoSound.play();
-            setTimeout(() => window.location.href = 'index.html', 2000);
-        };
+        setInterval(drawFlakes, 25);
+    }
 
-        
-    </script>
+    /*==================== SANTA ANIMATION ====================*/
+    window.onclick = () => {
+        const santa = document.getElementById('santa');
+        santa.style.display = 'block';
+        hoHoHoSound.play();
+        setTimeout(() => window.location.href = 'index.html', 2000);
+    };
+
+    /*==================== INITIATE ALL FUNCTIONS ====================*/
+    window.onload = () => {
+        startChristmasExperience();
+        startSnowfall();
+    };
+</script>
+<script>
+    // /*==================== MUSIC AUTOPLAY LOGIC ====================*/
+    // const music = document.getElementById('christmasSong');
+    // const hoHoHoSound = document.getElementById('hoHoHoSound');
+
+    // Start Music Automatically
+    function playChristmasMusic() {
+        if (music) {
+            music.play().then(() => {
+                console.log('🎵 Christmas music is playing automatically!');
+            }).catch((error) => {
+                console.warn('🚫 Autoplay prevented. Waiting for user interaction.', error);
+                enableInteractionFallback();
+            });
+        }
+    }
+
+    // Ensure Music Plays on User Interaction if Blocked
+    function enableInteractionFallback() {
+        document.addEventListener('click', () => {
+            music.play();
+            console.log('🎵 Music started after user interaction!');
+        }, { once: true });
+    }
+
+    /*==================== VOICE NARRATION ====================*/
+    function playChristmasNarration() {
+        const text = "Wishing you a Merry Christmas and a Happy New Year!";
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-GB';
+        utterance.rate = 0.9;
+        utterance.pitch = 1;
+        utterance.volume = 1;
+
+        if ('speechSynthesis' in window) {
+            speechSynthesis.cancel(); // Clear any queued speeches
+            speechSynthesis.speak(utterance);
+        } else {
+            console.warn("🚫 Speech Synthesis API not supported on this browser.");
+        }
+    }
+
+    /*==================== SNOWFALL EFFECT ====================*/
+    function startSnowfall() {
+        const canvas = document.getElementById('snowfall');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const flakes = Array(100).fill().map(() => ({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            r: Math.random() * 4 + 1,
+            d: Math.random() + 1,
+        }));
+
+        function drawFlakes() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'white';
+            ctx.beginPath();
+            flakes.forEach(f => {
+                ctx.moveTo(f.x, f.y);
+                ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2, true);
+            });
+            ctx.fill();
+            moveFlakes();
+        }
+
+        function moveFlakes() {
+            flakes.forEach(f => {
+                f.y += Math.pow(f.d, 2);
+                if (f.y > canvas.height) {
+                    f.y = 0;
+                    f.x = Math.random() * canvas.width;
+                }
+            });
+        }
+
+        setInterval(drawFlakes, 25);
+    }
+
+    /*==================== SANTA ANIMATION ====================*/
+    window.onclick = () => {
+        const santa = document.getElementById('santa');
+        santa.style.display = 'block';
+        hoHoHoSound.play();
+        setTimeout(() => window.location.href = 'index.html', 2000);
+    };
+
+    /*==================== INITIATE ALL FUNCTIONS ====================*/
+    window.onload = () => {
+        playChristmasMusic();   // Attempt to play music on load
+        playChristmasNarration(); // Start narration
+        startSnowfall();        // Start snowfall animation
+    };
+</script>
+
 </body>
 
 </html>
