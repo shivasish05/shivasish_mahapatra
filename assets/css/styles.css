@@ -1490,6 +1490,24 @@ img{
 
 
 
+/* Narration Button Styling */
+#playNarrationButton {
+  position: fixed;
+  bottom: 70px; /* Adjust to avoid overlap with music button */
+  right: 20px;
+  z-index: 9999;
+  background-color: #4CAF50;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+#playNarrationButton:hover {
+  background-color: #388E3C;
+}
 
 
 

@@ -406,6 +406,7 @@ window.onload = () => {
     if (music) {
         music.play().catch(error => console.log("Autoplay prevented:", error));
     }
+    
 };
 
 

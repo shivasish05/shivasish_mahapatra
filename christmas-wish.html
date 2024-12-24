@@ -1,70 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Merry Christmas Wish</title>
     <link rel="stylesheet" href="assets/css/styles.css">
     <style>
+        /*==================== CHRISTMAS IMAGE RESPONSIVE ====================*/
+        /*==================== CHRISTMAS IMAGE - FIT BOX ====================*/
+        .christmas-bg {
+            position: relative;
+            width: 90%;
+            max-width: 600px;
+            height: 350px;
+            /* Fixed height for better control */
+            margin: 0 auto;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
 
+        .christmas-bg img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* Ensures image fills the box without distortion */
+            display: block;
+        }
 
-/*==================== CHRISTMAS IMAGE RESPONSIVE ====================*/
-/*==================== CHRISTMAS IMAGE - FIT BOX ====================*/
-.christmas-bg {
-    position: relative;
-    width: 90%;
-    max-width: 600px;
-    height: 350px; /* Fixed height for better control */
-    margin: 0 auto;
-    overflow: hidden;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
+        /* Adjust for smaller devices */
+        @media (max-width: 768px) {
+            .christmas-bg img {
+                max-width: 90%;
+            }
 
-.christmas-bg img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Ensures image fills the box without distortion */
-    display: block;
-}
+            .christmas-wish {
+                font-size: 1.2rem;
+            }
 
-/* Adjust for smaller devices */
-@media (max-width: 768px) {
-    .christmas-bg img {
-        max-width: 90%;
-    }
+            .christmas-title {
+                font-size: 2rem;
+            }
 
-    .christmas-wish {
-        font-size: 1.2rem;
-    }
+            .christmas-subtitle {
+                font-size: 1rem;
+            }
+        }
 
-    .christmas-title {
-        font-size: 2rem;
-    }
+        /* For mobile devices */
+        @media (max-width: 480px) {
+            .christmas-bg img {
+                max-width: 95%;
+            }
 
-    .christmas-subtitle {
-        font-size: 1rem;
-    }
-}
+            .christmas-wish {
+                font-size: 1rem;
+            }
 
-/* For mobile devices */
-@media (max-width: 480px) {
-    .christmas-bg img {
-        max-width: 95%;
-    }
+            .christmas-title {
+                font-size: 1.5rem;
+            }
 
-    .christmas-wish {
-        font-size: 1rem;
-    }
-
-    .christmas-title {
-        font-size: 1.5rem;
-    }
-
-    .christmas-subtitle {
-        font-size: 0.9rem;
-    }
-}
+            .christmas-subtitle {
+                font-size: 0.9rem;
+            }
+        }
 
         /* General Styles */
         body {
@@ -117,10 +118,11 @@
             color: #FF0000;
         }
 
-        .christmas-content{
+        .christmas-content {
             max-width: 600px;
             box-shadow: none;
         }
+
         .christmas-subtitle {
             font-size: 1.2rem;
             font-family: 'Great Vibes', cursive;
@@ -128,8 +130,13 @@
         }
 
         @keyframes handwriting {
-            from { width: 0; }
-            to { width: 100%; }
+            from {
+                width: 0;
+            }
+
+            to {
+                width: 100%;
+            }
         }
 
         /* Snowfall Canvas */
@@ -177,6 +184,7 @@
             0% {
                 bottom: -200px;
             }
+
             100% {
                 bottom: 50%;
             }
@@ -187,16 +195,24 @@
             .christmas-wish {
                 font-size: 1.2rem;
             }
+
             .christmas-title {
                 font-size: 2rem;
             }
+
             .christmas-subtitle {
-                font-size: 1rem;
+                white-space: nowrap;
+                overflow: hidden;
+                border-right: 2px solid transparent;
+                animation: handwriting 1s steps(40) forwards;
+                /* Reduced from 2s to 1s */
             }
+
             .music-toggle-button {
                 font-size: 0.8rem;
                 padding: 6px 12px;
             }
+
             .santa {
                 width: 100px;
             }
@@ -206,22 +222,27 @@
             .christmas-wish {
                 font-size: 1rem;
             }
+
             .christmas-title {
                 font-size: 1.5rem;
             }
+
             .christmas-subtitle {
                 font-size: 0.9rem;
             }
+
             .music-toggle-button {
                 font-size: 0.7rem;
                 padding: 5px 10px;
             }
+
             .santa {
                 width: 80px;
             }
         }
     </style>
 </head>
+
 <body>
     <!--==================== CHRISTMAS MODAL ====================-->
     <div id="christmasModal" class="christmas-modal">
@@ -230,14 +251,17 @@
             <div class="christmas-bg">
                 <img src="assets/images/christmas_bg.jpg" alt="Merry Christmas">
                 <div class="christmas-message-container">
-                    <h2 class="christmas-wish">We wish you a</h2>
+                    <h2 class="christmas-wish">Wishing you a</h2>
                     <h1 class="christmas-title">Merry Christmas</h1>
                     <h3 class="christmas-subtitle">& Happy New Year</h3>
                 </div>
             </div>
             <audio id="christmasSong" src="assets/music/christmas_song.mp3" preload="auto" autoplay loop></audio>
             <audio id="hoHoHoSound" src="assets/music/hohoho.mp3" preload="auto"></audio>
-            <button id="musicToggleButton" class="music-toggle-button">Stop Music 🎵</button>
+            <button id="musicToggleButton" class="music-toggle-button">🎵</button>
+
+            <button id="playNarrationButton" class="music-toggle-button">🗣️</button>
+
         </div>
         <canvas id="snowfall"></canvas>
         <img src="assets/images/santa.png" alt="Santa Claus" class="santa" id="santa" style="display:none;">
@@ -261,16 +285,31 @@
 
         musicToggleButton.addEventListener('click', toggleMusic);
 
-        /*==================== TEXT-TO-SPEECH ====================*/
+        /*==================== VOICE TRANSCRIPTION ====================*/
         function playChristmasNarration() {
             const text = "We wish you a Merry Christmas and a Happy New Year!";
             const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'en-GB';
-            utterance.rate = 0.7;
+            utterance.lang = 'en-US';
+            utterance.rate = 0.8;
             utterance.pitch = 1;
             utterance.volume = 1;
-            speechSynthesis.speak(utterance);
+
+            // Ensure speech starts only after a user interaction
+            if ('speechSynthesis' in window) {
+                speechSynthesis.cancel(); // Clear any queued speeches
+                speechSynthesis.speak(utterance);
+            } else {
+                console.warn("🚫 Speech Synthesis API not supported on this browser.");
+            }
         }
+
+        // Add event listener for mobile compatibility
+        document.addEventListener('click', () => {
+            if (!speechSynthesis.speaking) {
+                playChristmasNarration();
+            }
+        }, { once: true });
+
 
         /*==================== SNOWFALL ====================*/
         function startSnowfall() {
@@ -308,6 +347,9 @@
             hoHoHoSound.play();
             setTimeout(() => window.location.href = 'index.html', 2000);
         };
+
+        
     </script>
 </body>
+
 </html>
