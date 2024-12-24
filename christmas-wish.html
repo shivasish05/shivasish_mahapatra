@@ -6,7 +6,7 @@
     <title>Merry Christmas Wish</title>
     <link rel="stylesheet" href="assets/css/styles.css">
     <style>
-        /* Fullscreen Modal */
+        /* General Styles */
         body {
             margin: 0;
             overflow: hidden;
@@ -95,8 +95,8 @@
             color: #fff;
             border: none;
             border-radius: 5px;
-            padding: 10px 20px;
-            font-size: 1rem;
+            padding: 8px 15px;
+            font-size: 0.9rem;
             cursor: pointer;
         }
 
@@ -110,7 +110,7 @@
             bottom: -200px;
             left: 50%;
             transform: translateX(-50%);
-            width: 150px;
+            width: 120px;
             animation: santaAnimation 2s ease-in-out forwards;
             z-index: 9999;
         }
@@ -121,6 +121,45 @@
             }
             100% {
                 bottom: 50%;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .christmas-wish {
+                font-size: 1.2rem;
+            }
+            .christmas-title {
+                font-size: 2rem;
+            }
+            .christmas-subtitle {
+                font-size: 1rem;
+            }
+            .music-toggle-button {
+                font-size: 0.8rem;
+                padding: 6px 12px;
+            }
+            .santa {
+                width: 100px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .christmas-wish {
+                font-size: 1rem;
+            }
+            .christmas-title {
+                font-size: 1.8rem;
+            }
+            .christmas-subtitle {
+                font-size: 0.9rem;
+            }
+            .music-toggle-button {
+                font-size: 0.7rem;
+                padding: 5px 10px;
+            }
+            .santa {
+                width: 80px;
             }
         }
     </style>
@@ -152,17 +191,6 @@
         const hoHoHoSound = document.getElementById('hoHoHoSound');
         const musicToggleButton = document.getElementById('musicToggleButton');
 
-        function playChristmasMusic() {
-            if (music) {
-                music.play().then(() => {
-                    console.log('🎵 Christmas music is playing!');
-                    musicToggleButton.innerText = 'Stop Music 🎵';
-                }).catch((error) => {
-                    console.warn('🚫 Autoplay prevented by the browser.', error);
-                });
-            }
-        }
-
         function toggleMusic() {
             if (music.paused) {
                 music.play();
@@ -175,70 +203,41 @@
 
         musicToggleButton.addEventListener('click', toggleMusic);
 
-        /*==================== SNOWFALL EFFECT ====================*/
+        /*==================== SNOWFALL ====================*/
         function startSnowfall() {
             const canvas = document.getElementById('snowfall');
             const ctx = canvas.getContext('2d');
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-
-            const flakes = [];
-            const numFlakes = 100;
-
-            function createFlakes() {
-                for (let i = 0; i < numFlakes; i++) {
-                    flakes.push({
-                        x: Math.random() * canvas.width,
-                        y: Math.random() * canvas.height,
-                        r: Math.random() * 4 + 1,
-                        d: Math.random() + 1,
-                    });
-                }
-            }
-
-            function drawFlakes() {
+            let flakes = Array(100).fill().map(() => ({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                r: Math.random() * 4 + 1
+            }));
+            function draw() {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 ctx.fillStyle = 'white';
-                ctx.beginPath();
-                for (let f of flakes) {
-                    ctx.moveTo(f.x, f.y);
-                    ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2, true);
-                }
-                ctx.fill();
+                flakes.forEach(f => {
+                    ctx.beginPath();
+                    ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+                    ctx.fill();
+                    f.y += 1;
+                    if (f.y > canvas.height) f.y = 0;
+                });
+                requestAnimationFrame(draw);
             }
-
-            createFlakes();
-            setInterval(drawFlakes, 25);
+            draw();
         }
 
-        /*==================== HUMAN VOICE MESSAGE ====================*/
-        function playChristmasNarration() {
-            const text = "We wish you a Merry Christmas and a Happy New Year!";
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'en-GB';
-            utterance.rate = 0.9;
-            utterance.pitch = 1;
-            utterance.volume = 1;
-            speechSynthesis.speak(utterance);
-        }
+        window.onload = () => {
+            startSnowfall();
+        };
 
-        /*==================== SANTA CLICK EVENT ====================*/
         window.onclick = () => {
-            const santa = document.getElementById('santa');
-            santa.style.display = 'block';
+            document.getElementById('santa').style.display = 'block';
             hoHoHoSound.play();
             setTimeout(() => window.location.href = 'index.html', 2000);
         };
-
-        window.onload = () => {
-            playChristmasMusic();
-            startSnowfall();
-            playChristmasNarration();
-        };
-
-        function closeWish() {
-            window.location.href = 'index.html';
-        }
     </script>
 </body>
 </html>
