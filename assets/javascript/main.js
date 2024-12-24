@@ -231,3 +231,185 @@ themeButton.addEventListener('click', () => {
     localStorage.setItem('selected-theme', getCurrentTheme())
     localStorage.setItem('selected-icon', getCurrentIcon())
 })
+
+
+
+
+
+
+
+
+
+
+/*==================== GLOBAL VARIABLES ====================*/
+const music = document.getElementById('christmasSong');
+const snowfallCanvas = document.getElementById('snowfall');
+
+/*==================== MUSIC AUTOPLAY ====================*/
+function playChristmasMusic() {
+    if (music) {
+        music.play().then(() => {
+            console.log('🎵 Christmas music is playing!');
+        }).catch((error) => {
+            console.warn('🚫 Autoplay prevented by the browser.', error);
+            // Show manual play button
+            const playButton = document.createElement('button');
+            playButton.innerText = 'Play Christmas Music 🎵';
+            playButton.style.position = 'fixed';
+            playButton.style.top = '20px';
+            playButton.style.left = '50%';
+            playButton.style.transform = 'translateX(-50%)';
+            playButton.style.zIndex = '9999';
+            playButton.style.padding = '10px 20px';
+            playButton.style.fontSize = '1rem';
+            playButton.style.backgroundColor = '#ff0000';
+            playButton.style.color = '#fff';
+            playButton.style.border = 'none';
+            playButton.style.cursor = 'pointer';
+            document.body.appendChild(playButton);
+
+            playButton.addEventListener('click', () => {
+                music.play();
+                playButton.remove();
+            });
+        });
+    }
+}
+
+/*==================== VOICE NARRATION (CHRISTMAS PAGE ONLY) ====================*/
+function playChristmasNarration() {
+    if (window.location.pathname.includes('christmas-wish.html')) {
+        const text = "We wish you a Merry Christmas and a Happy New Year!";
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-US';
+        utterance.rate = 0.8; // Calm speed
+        utterance.pitch = 1; // Normal pitch
+        utterance.volume = 1; // Full volume
+        speechSynthesis.speak(utterance);
+    }
+}
+
+/*==================== SNOWFALL EFFECT ====================*/
+function startSnowfall() {
+    if (!snowfallCanvas) return;
+
+    const ctx = snowfallCanvas.getContext('2d');
+    snowfallCanvas.width = window.innerWidth;
+    snowfallCanvas.height = window.innerHeight;
+
+    const flakes = [];
+    const numFlakes = 100;
+
+    function createFlakes() {
+        for (let i = 0; i < numFlakes; i++) {
+            flakes.push({
+                x: Math.random() * snowfallCanvas.width,
+                y: Math.random() * snowfallCanvas.height,
+                r: Math.random() * 4 + 1,
+                d: Math.random() + 1,
+            });
+        }
+    }
+
+    function drawFlakes() {
+        ctx.clearRect(0, 0, snowfallCanvas.width, snowfallCanvas.height);
+        ctx.fillStyle = 'white';
+        ctx.beginPath();
+        for (let i = 0; i < flakes.length; i++) {
+            const f = flakes[i];
+            ctx.moveTo(f.x, f.y);
+            ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2, true);
+        }
+        ctx.fill();
+        moveFlakes();
+    }
+
+    function moveFlakes() {
+        for (let i = 0; i < flakes.length; i++) {
+            const f = flakes[i];
+            f.y += Math.pow(f.d, 2);
+            if (f.y > snowfallCanvas.height) {
+                f.y = 0;
+                f.x = Math.random() * snowfallCanvas.width;
+            }
+        }
+    }
+
+    createFlakes();
+    setInterval(drawFlakes, 25);
+}
+
+/*==================== WISH MODAL LOGIC ====================*/
+function showWishModal() {
+    const fromChristmasWish = localStorage.getItem('fromChristmasWish');
+
+    if (!fromChristmasWish && document.getElementById('christmasModal')) {
+        // Show the modal if not redirected from the wish page
+        document.getElementById('christmasModal').classList.add('show');
+        playChristmasMusic();
+    } else {
+        // Clear the flag after redirection
+        localStorage.removeItem('fromChristmasWish');
+    }
+}
+
+function closeWishModal() {
+    if (document.getElementById('christmasModal')) {
+        document.getElementById('christmasModal').classList.remove('show');
+    }
+    if (music) {
+        music.pause();
+    }
+    localStorage.setItem('fromChristmasWish', 'true');
+    window.location.href = 'index.html';
+}
+
+/*==================== PAGE INITIALIZATION ====================*/
+window.onload = () => {
+    // Snowfall starts automatically
+    startSnowfall();
+
+    // Voice narration only on Christmas Wish page
+    playChristmasNarration();
+
+    // Music plays on Christmas Wish page
+    playChristmasMusic();
+
+    // Handle Modal Logic
+    showWishModal();
+};
+
+/*==================== CLOSE WISH MODAL EVENT LISTENER ====================*/
+const closeButton = document.querySelector('.christmas-close-button');
+if (closeButton) {
+    closeButton.addEventListener('click', closeWishModal);
+}
+
+
+// Toggle Music Play/Pause
+function toggleMusic() {
+    const music = document.getElementById('christmasSong');
+    const musicButton = document.getElementById('musicControlBtn');
+
+    if (music.paused) {
+        music.play();
+        musicButton.innerText = '🔊';
+    } else {
+        music.pause();
+        musicButton.innerText = '🔇';
+    }
+}
+
+// Automatically play music on page load
+window.onload = () => {
+    const music = document.getElementById('christmasSong');
+    if (music) {
+        music.play().catch(error => console.log("Autoplay prevented:", error));
+    }
+};
+
+
+
+
+
+

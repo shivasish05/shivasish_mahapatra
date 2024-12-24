@@ -60,17 +60,27 @@
                 </ul>
                 <i class="uil uil-times nav__close nav__icon" id="nav-close"></i>
             </div>
+        <!-- HEADER BUTTONS -->
+        <div class="nav__btns">
+            <!-- Theme Toggle Button -->
+            <i class="uil uil-moon change__theme" id="theme-button"></i>
 
-            <div class="nav__btns">
-                <!-- Theme Changing Button -->
-                <i class="uil uil-moon change__theme" id="theme-button"></i>
+            <!-- Christmas Wish Button -->
+            <a href="christmas-wish.html" class="nav__btn nav__wish-button" title="Christmas Wish">
+                🎄
+            </a>
 
-                <div class="nav__toggle" id="nav-toggle">
-                    <i class="uil uil-apps nav__icon"></i>
-                </div>
+            <!-- Music Control Button -->
+            <button id="musicControlBtn" class="nav__btn nav__music-button" onclick="toggleMusic()" title="Toggle Music">
+                🎵
+            </button>
+            <!-- Mobile Menu Toggle -->
+            <div class="nav__toggle" id="nav-toggle">
+                <i class="uil uil-apps nav__icon"></i>
             </div>
-        </nav>
-    </header>
+        </div>
+    </nav>
+</header>
 
     <!--==================== MAIN ====================-->
     <main class="main">
@@ -133,6 +143,26 @@
                 </div>
             </div>
         </section>
+
+ <!--==================== CHRISTMAS MODAL ====================-->
+ <div id="christmasModal" class="christmas-modal">
+    <div class="christmas-content">
+        <span class="christmas-close-button" onclick="closeModal()">&times;</span>
+        <div class="christmas-bg">
+            <img src="assets/images/christmas_bg.jpg" alt="Merry Christmas" class="christmas-image">
+            <div class="christmas-overlay"></div>
+            <div class="christmas-message-container">
+                <h2 class="christmas-wish">wishing you a</h2>
+                <h1 class="christmas-title">Merry Christmas</h1>
+                <h3 class="christmas-subtitle">& Happy New Year</h3>
+            </div>
+        </div>
+        <audio id="christmasSong" src="assets\music\christmas_song.mp3" loop></audio>
+    </div>
+    <canvas id="snowfall"></canvas>
+</div>
+
+
 
         <!--==================== ABOUT ====================-->
         <section class="about section" id="about">
